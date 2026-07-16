@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+
+@theme inline {
+  /* === Cores CRT === */
+  --color-crt-bg: #000000;
+  --color-crt-surface: #050505;
+  --color-crt-surface-2: #0a0a0a;
+  --color-crt-surface-3: #0f0f0f;
+  --color-crt-fg: oklch(82% 0.16 145);
+  --color-crt-fg-2: oklch(60% 0.12 145);
+  --color-crt-muted: oklch(35% 0.08 145);
+  --color-crt-accent: oklch(82% 0.16 145);
+  --color-crt-accent-dim: oklch(55% 0.12 145);
+  --color-crt-accent-2: oklch(65% 0.14 145);
+  --color-crt-border: oklch(20% 0.06 145);
+  --color-crt-border-2: oklch(28% 0.07 145);
+  --color-crt-red: oklch(60% 0.16 30);
+  --color-crt-green: oklch(65% 0.16 145);
+  --color-crt-yellow: oklch(72% 0.14 85);
+
+  /* === Status === */
+  --color-crt-stable: oklch(72% 0.16 145);
+  --color-crt-optimized: oklch(65% 0.14 200);
+  --color-crt-active: oklch(60% 0.12 85);
+  --color-crt-ready: oklch(45% 0.08 145);
+
+  /* === Fonte === */
+  --font-mono: var(--font-jetbrains), "Fira Code", ui-monospace, monospace;
+
+  /* === Easing === */
+  --ease-crt: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* === Base === */
+::selection {
+  background: var(--color-crt-accent);
+  color: #000;
+  text-shadow: none;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  background: var(--color-crt-bg);
+}
+
+body {
+  font-family: var(--font-mono);
+  color: var(--color-crt-fg);
+  background: var(--color-crt-bg);
+  line-height: 1.5;
+  text-shadow: 0 0 2px rgba(0, 255, 0, 0.6), 0 0 6px rgba(0, 255, 0, 0.08);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: var(--color-crt-border-2); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-crt-muted); }
+
+/* === Utility classes === */
+.accent {
+  color: var(--color-crt-accent);
+  text-shadow: 0 0 4px rgba(0, 255, 0, 0.6), 0 0 12px rgba(0, 255, 0, 0.2), 0 0 24px rgba(0, 255, 0, 0.08);
+}
+.fg-2 { color: var(--color-crt-fg-2); }
+.muted { color: var(--color-crt-muted); }
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* === CRT Overlay === */
+.crt {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0, 255, 0, 0.025) 2px, rgba(0, 255, 0, 0.025) 4px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  animation: crt-flicker 0.12s infinite;
+  background: transparent;
+}
+
+/* === Keyframes === */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes crt-flicker {
+  0% { opacity: 0.98; } 2% { opacity: 1; } 4% { opacity: 0.97; }
+  6% { opacity: 1; } 10% { opacity: 0.99; } 20% { opacity: 1; }
+  30% { opacity: 0.98; } 40% { opacity: 1; } 50% { opacity: 0.99; }
+  60% { opacity: 1; } 70% { opacity: 0.98; } 80% { opacity: 1; }
+  90% { opacity: 0.99; } 100% { opacity: 0.98; }
+}
+
+@keyframes module-flicker {
+  0%, 100% { opacity: 1; }
+  20% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+  70% { opacity: 0.2; }
+}

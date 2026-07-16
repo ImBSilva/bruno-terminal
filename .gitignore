@@ -35,9 +35,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Nested git repos
-bruno-dev_terminal/.git/
-
 # Misc
 *.tsbuildinfo
 next-env.d.ts

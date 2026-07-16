@@ -347,8 +347,8 @@ npm run lint          # ESLint + Prettier
 
 ### Fase 1 — Lançamento (MVP)
 
-- [ ] `npx create-next-app@latest` com TypeScript, Tailwind, App Router
-- [ ] Instalar dependências (three, r3f, drei, mdx, resend)
+- [x] `npx create-next-app@latest` com TypeScript, Tailwind, App Router
+- [x] Instalar dependências (three, r3f, drei, mdx, resend)
 - [ ] Configurar Tailwind 4 com tema CRT (`@theme` em `globals.css`)
 - [ ] Criar `lib/constants.ts` com dados de navegação e redes sociais
 - [ ] Criar `lib/utils.ts` com funções utilitárias
