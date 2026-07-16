@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figma Embed — CRT Approaches Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #000; --surface: #050505; --surface-2: #0a0a0a;
+  --fg: oklch(82% 0.16 145); --fg-2: oklch(60% 0.12 145);
+  --muted: oklch(35% 0.08 145); --border: oklch(20% 0.06 145);
+  --accent: oklch(82% 0.16 145);
+  --font: 'JetBrains Mono', ui-monospace, monospace;
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:15px;background:#000}
+body{
+  font-family:var(--font);color:var(--fg);background:var(--bg);
+  text-shadow:0 0 2px rgba(0,255,0,.6),0 0 6px rgba(0,255,0,.08);
+  -webkit-font-smoothing:antialiased;
+  padding:2rem;
+}
+h1{font-size:1.6rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.25rem}
+h2{font-size:1rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;color:var(--fg-2)}
+.sub{margin-bottom:2.5rem;color:var(--muted);font-size:.75rem}
+.approach-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:3rem}
+@media(max-width:800px){.approach-grid{grid-template-columns:1fr}}
+.approach-card{border:2px solid var(--border);background:var(--surface);padding:1.25rem;position:relative}
+.approach-card h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;color:var(--accent)}
+.approach-card .badge{font-size:.55rem;color:var(--muted);margin-bottom:.75rem;letter-spacing:.04em}
+.approach-card p{font-size:.7rem;color:var(--fg-2);line-height:1.7;margin-bottom:.75rem}
+/* demo embed container */
+.embed-demo{width:100%;aspect-ratio:16/10;border:2px solid var(--border);overflow:hidden;position:relative;background:#111}
+.mock-figma{width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:8px;background:var(--surface-2)}
+.mock-figma .col{display:flex;flex-direction:column;gap:4px}
+.mock-figma .block{flex:1;border-radius:4px}
+/* colorful blocks to simulate a UI prototype */
+.c1{background:#4A90D9}.c2{background:#7B61FF}.c3{background:#FF6B6B}.c4{background:#50C878}
+.c5{background:#FFB347}.c6{background:#E040FB}.c7{background:#00BCD4}.c8{background:#FF4081}
+.c9{background:#8BC34A}
+
+/* Approach 2: dark theme iframe */
+.embed-demo.dark .mock-figma{background:#1e1e2e}
+.embed-demo.dark .c1{background:#3b82f6;opacity:.9}.embed-demo.dark .c2{background:#a855f7;opacity:.9}
+.embed-demo.dark .c3{background:#f87171;opacity:.9}.embed-demo.dark .c4{background:#34d399;opacity:.9}
+
+/* CRT overlays */
+.crt-overlay{
+  position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,0,.03) 2px,rgba(0,255,0,.03) 4px);
+}
+.crt-overlay.vignette{background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.6) 100%),repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,0,.03) 2px,rgba(0,255,0,.03) 4px)}
+.crt-green{filter:grayscale(1) sepia(1) saturate(3) hue-rotate(90deg)}
+
+/* Approach 3: hybrid thumbnail */
+.thumbnail-demo{width:100%;aspect-ratio:16/10;border:2px solid var(--border);overflow:hidden;position:relative;background:var(--surface-2);cursor:pointer}
+.thumbnail-demo .mock-thumb{width:100%;height:100%;object-fit:cover;filter:brightness(.7) contrast(1.2)}
+.thumbnail-demo .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);opacity:0;transition:opacity .25s}
+.thumbnail-demo:hover .play-overlay{opacity:1}
+.thumbnail-demo .play-btn{font-family:var(--font);font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);border:2px solid var(--accent);padding:.5rem 1rem;background:#000;text-shadow:0 0 6px var(--accent)}
+.thumbnail-demo .crt-overlay{z-index:3}
+/* grid scanlines */
+.grid-scanlines{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background-image:linear-gradient(rgba(0,255,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,0,.04) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+
+/* Approach 4: portal modal */
+.portal-container{position:relative;width:100%;aspect-ratio:16/10;border:2px solid var(--border);overflow:hidden;cursor:pointer}
+.portal-container .portal-frame{width:100%;height:100%;position:relative;background:var(--surface-2);display:flex;align-items:center;justify-content:center}
+.portal-container .portal-label{font-size:.65rem;color:var(--muted);text-align:center;z-index:1;position:relative}
+.portal-container .portal-label span{display:block;margin-top:.5rem;font-size:.5rem;color:var(--fg-2)}
+.portal-container:hover{border-color:var(--accent)}
+.portal-container .corner-bracket{
+  position:absolute;width:16px;height:16px;border-color:var(--accent);opacity:.5;
+}
+.portal-container .corner-bracket.tl{top:6px;left:6px;border-top:2px solid;border-left:2px solid}
+.portal-container .corner-bracket.tr{top:6px;right:6px;border-top:2px solid;border-right:2px solid}
+.portal-container .corner-bracket.bl{bottom:6px;left:6px;border-bottom:2px solid;border-left:2px solid}
+.portal-container .corner-bracket.br{bottom:6px;right:6px;border-bottom:2px solid;border-right:2px solid}
+
+.verdict{font-size:.65rem;padding:.5rem .75rem;border:2px solid var(--border);background:var(--surface-2);margin-top:.75rem;color:var(--fg-2)}
+.verdict strong{color:var(--accent)}
+
+.pulse-dot{display:inline-block;width:6px;height:6px;background:var(--accent);margin-right:.35rem;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.footer{padding:2rem 0 0;border-top:2px solid var(--border);margin-top:1rem;display:flex;gap:1rem;flex-wrap:wrap}
+.footer a{font-size:.7rem;color:var(--muted);border:1px solid var(--border);padding:.35rem .75rem;transition:color .2s,border-color .2s}
+.footer a:hover{color:var(--accent);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<h1><span class="pulse-dot"></span> Figma Embed × CRT: 4 Approaches</h1>
+<p class="sub">Como harmonizar protótipos coloridos com a estética monocromática verde/preto do terminal.</p>
+
+<div class="approach-grid">
+
+  <!-- APPROACH 1 -->
+  <div class="approach-card">
+    <h3>01. RAW IFRAME</h3>
+    <div class="badge">CONTRASTE MÁXIMO — sem tratamento</div>
+    <p>Iframe Figma puro. Fundo claro, cores vivas. Quebra a imersão CRT completamente.</p>
+    <div class="embed-demo">
+      <div class="mock-figma">
+        <div class="col"><div class="block c1"></div><div class="block c2"></div><div class="block c3"></div></div>
+        <div class="col"><div class="block c4"></div><div class="block c5"></div><div class="block c6"></div></div>
+        <div class="col"><div class="block c7"></div><div class="block c8"></div><div class="block c9"></div></div>
+      </div>
+    </div>
+    <div class="verdict">✗ <strong>RUIM</strong> — o branco do Figma grita contra o fundo preto. Imersão quebrada.</div>
+  </div>
+
+  <!-- APPROACH 2 -->
+  <div class="approach-card">
+    <h3>02. CRT PORTAL WINDOW</h3>
+    <div class="badge">ISOLADO + OVERLAY — janela de programa rodando no terminal</div>
+    <p>Iframe com <code>&theme=dark</code> + overlay scanline + vinheta. O protótipo parece uma "aplicação rodando dentro do terminal CRT".</p>
+    <div class="embed-demo dark">
+      <div class="mock-figma">
+        <div class="col"><div class="block c1"></div><div class="block c2"></div><div class="block c3"></div></div>
+        <div class="col"><div class="block c4"></div><div class="block c5"></div><div class="block c6"></div></div>
+        <div class="col"><div class="block c7"></div><div class="block c8"></div><div class="block c9"></div></div>
+      </div>
+      <div class="crt-overlay vignette"></div>
+      <div class="corner-bracket tl"></div><div class="corner-bracket tr"></div>
+      <div class="corner-bracket bl"></div><div class="corner-bracket br"></div>
+    </div>
+    <div class="verdict">✓ <strong>BOM</strong> — o contraste vira parte da narrativa. O terminal está exibindo uma aplicação externa.</div>
+  </div>
+
+  <!-- APPROACH 3 -->
+  <div class="approach-card">
+    <h3>03. CRT THUMBNAIL → OPEN EXTERNAL</h3>
+    <div class="badge">PRÉVIA CONTROLADA — screenshot + link externo</div>
+    <p>Thumbnail com grade CRT + scanlines + botão "▶ LOAD PROTOTYPE". O protótipo real abre fora do site.</p>
+    <div class="thumbnail-demo">
+      <div class="grid-scanlines"></div>
+      <div class="mock-figma" style="filter:grayscale(.7) sepia(.6) saturate(2) hue-rotate(90deg) brightness(.6)">
+        <div class="col"><div class="block c1"></div><div class="block c2"></div><div class="block c3"></div></div>
+        <div class="col"><div class="block c4"></div><div class="block c5"></div><div class="block c6"></div></div>
+        <div class="col"><div class="block c7"></div><div class="block c8"></div><div class="block c9"></div></div>
+      </div>
+      <div class="crt-overlay"></div>
+      <div class="play-overlay">
+        <span class="play-btn">▶ LOAD PROTOTYPE</span>
+      </div>
+    </div>
+    <div class="verdict">✓ <strong>BOM</strong> — controle visual total. Ideal quando o protótipo é bonito, mas não precisa ser interativo no site.</div>
+  </div>
+
+  <!-- APPROACH 4 -->
+  <div class="approach-card">
+    <h3>04. GREEN-TINTED FILTER</h3>
+    <div class="badge">FORÇA A PALETA — CSS filter sobre o iframe</div>
+    <p><code>grayscale(1) sepia(1) hue-rotate(90deg)</code> força tudo pro verde. Mas distorce o trabalho de UI/UX — cores são parte do design.</p>
+    <div class="embed-demo">
+      <div class="mock-figma crt-green">
+        <div class="col"><div class="block c1"></div><div class="block c2"></div><div class="block c3"></div></div>
+        <div class="col"><div class="block c4"></div><div class="block c5"></div><div class="block c6"></div></div>
+        <div class="col"><div class="block c7"></div><div class="block c8"></div><div class="block c9"></div></div>
+      </div>
+      <div class="crt-overlay vignette"></div>
+    </div>
+    <div class="verdict">⚠ <strong>RISCO</strong> — unifica o visual, mas distorce o trabalho. Só use se o protótipo for só sobre layout, não sobre cor.</div>
+  </div>
+
+</div>
+
+<!-- SECOND ROW: HYBRID APPROACH -->
+<h2>→ Híbrido recomendado: <span class="accent">PORTAL + THUMBNAIL</span></h2>
+<p class="sub" style="margin-bottom:1.5rem;max-width:48em">
+  Uma fusão das abordagens 2 e 3: o card do projeto mostra uma thumbnail com estética CRT + grade + scanlines.
+  Ao clicar, abre um modal fullscreen com o iframe Figma em dark mode, envelopado em bordas CRT e overlay sutil.
+  Assim você mantém o controle visual da página E oferece o protótipo interativo real quando o visitante quer.
+</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;border:2px solid var(--border);padding:1.5rem;background:var(--surface);margin-bottom:3rem">
+  <div style="border:2px solid var(--border);overflow:hidden;position:relative;cursor:pointer">
+    <div class="grid-scanlines"></div>
+    <div class="mock-figma" style="filter:brightness(.6) contrast(1.1);height:200px">
+      <div class="col"><div class="block c1"></div><div class="block c2"></div></div>
+      <div class="col"><div class="block c4"></div><div class="block c5"></div></div>
+      <div class="col"><div class="block c7"></div><div class="block c8"></div></div>
+    </div>
+    <div class="crt-overlay"></div>
+    <div style="position:absolute;bottom:.5rem;right:.5rem;font-size:.5rem;color:var(--accent);background:#000;padding:.25rem .5rem;border:1px solid var(--accent)">▶ LOAD</div>
+    <div style="position:absolute;top:.5rem;left:.5rem;font-size:.45rem;color:var(--muted);background:#000;padding:.15rem .4rem;border:1px solid var(--border)">[ GALLERY ]</div>
+  </div>
+  <div style="display:flex;flex-direction:column;justify-content:center;gap:.5rem">
+    <div style="font-size:.6rem;color:var(--accent);letter-spacing:.1em">→ CLICK TO EXPAND</div>
+    <div style="font-size:.85rem;line-height:1.6;color:var(--fg-2)">
+      Thumbnail com grade 24px + scanlines + vinheta + badge de categoria.<br>
+      Ao clicar: modal fullscreen com <code>&theme=dark</code>, overlay CRT, cantos de bracket.
+    </div>
+    <div style="display:flex;gap:.5rem;margin-top:.25rem">
+      <span style="font-size:.5rem;color:var(--muted);border:1px solid var(--border);padding:.2rem .5rem">preserva imersão CRT</span>
+      <span style="font-size:.5rem;color:var(--muted);border:1px solid var(--border);padding:.2rem .5rem">prototype interativo real</span>
+      <span style="font-size:.5rem;color:var(--muted);border:1px solid var(--border);padding:.2rem .5rem">controle visual total</span>
+    </div>
+  </div>
+</div>
+
+<h2>→ Minha recomendação</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:3rem;font-size:.7rem">
+  <div style="border:2px solid var(--border);padding:1rem;background:var(--surface-2)">
+    <div style="color:var(--accent);margin-bottom:.5rem">HOME / GALERIA</div>
+    <div style="color:var(--fg-2);line-height:1.7">
+      <strong style="color:var(--fg)">Thumbnail CRT</strong> (abordagem 3).<br>
+      Screenshot com grade, scanlines, botão "▶ LOAD". Homogêneo com o site.
+    </div>
+  </div>
+  <div style="border:2px solid var(--border);padding:1rem;background:var(--surface-2)">
+    <div style="color:var(--accent);margin-bottom:.5rem">PÁGINA DO PROJETO</div>
+    <div style="color:var(--fg-2);line-height:1.7">
+      <strong style="color:var(--fg)">Portal CRT</strong> (abordagem 2).<br>
+      Iframe Figma com <code>&theme=dark</code> + overlay scanline + vinheta. O protótipo parece uma "aplicação rodando no terminal".
+    </div>
+  </div>
+  <div style="border:2px solid var(--border);padding:1rem;background:var(--surface-2)">
+    <div style="color:var(--accent);margin-bottom:.5rem">FULLSCREEN</div>
+    <div style="color:var(--fg-2);line-height:1.7">
+      <strong style="color:var(--fg)">Modal fullscreen</strong> (híbrido).<br>
+      Ao clicar no thumbnail ou portal, abre o iframe em tela cheia com molduras CRT. Experiência imersiva sem sair do site.
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="index.html">← VOLTAR AO PORTFOLIO</a>
+  <a href="projects.html">PROJECT LABORATORY</a>
+  <span style="font-size:.65rem;color:var(--muted);margin-left:auto">[ DEMO — FIGMA EMBED × CRT ]</span>
+</div>
+
+</body>
+</html>
