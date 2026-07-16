@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 @theme inline {
   /* === Cores CRT === */
   --color-crt-bg: #000000;
@@ -29,7 +28,7 @@
   --font-mono: var(--font-jetbrains), "Fira Code", ui-monospace, monospace;
 
   /* === Easing === */
-  --ease-crt: cubic-bezier(.22, 1, .36, 1);
+  --ease-crt: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* === Base === */
@@ -50,25 +49,45 @@ body {
   color: var(--color-crt-fg);
   background: var(--color-crt-bg);
   line-height: 1.5;
-  text-shadow: 0 0 2px rgba(0, 255, 0, 0.6), 0 0 6px rgba(0, 255, 0, 0.08);
+  text-shadow:
+    0 0 2px rgba(0, 255, 0, 0.6),
+    0 0 6px rgba(0, 255, 0, 0.08);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
 }
 
 /* === Scrollbar === */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #000; }
-::-webkit-scrollbar-thumb { background: var(--color-crt-border-2); border-radius: 0; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-crt-muted); }
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-crt-border-2);
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-crt-muted);
+}
 
 /* === Utility classes === */
 .accent {
   color: var(--color-crt-accent);
-  text-shadow: 0 0 4px rgba(0, 255, 0, 0.6), 0 0 12px rgba(0, 255, 0, 0.2), 0 0 24px rgba(0, 255, 0, 0.08);
+  text-shadow:
+    0 0 4px rgba(0, 255, 0, 0.6),
+    0 0 12px rgba(0, 255, 0, 0.2),
+    0 0 24px rgba(0, 255, 0, 0.08);
 }
-.fg-2 { color: var(--color-crt-fg-2); }
-.muted { color: var(--color-crt-muted); }
-.tabular { font-variant-numeric: tabular-nums; }
+.fg-2 {
+  color: var(--color-crt-fg-2);
+}
+.muted {
+  color: var(--color-crt-muted);
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
 
 /* === CRT Overlay === */
 .crt {
@@ -77,7 +96,13 @@ body {
   z-index: 9999;
   pointer-events: none;
   background:
-    repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0, 255, 0, 0.025) 2px, rgba(0, 255, 0, 0.025) 4px),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 255, 0, 0.025) 2px,
+      rgba(0, 255, 0, 0.025) 4px
+    ),
     radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.8) 100%);
 }
 
@@ -93,21 +118,142 @@ body::before {
 
 /* === Keyframes === */
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 @keyframes crt-flicker {
-  0% { opacity: 0.98; } 2% { opacity: 1; } 4% { opacity: 0.97; }
-  6% { opacity: 1; } 10% { opacity: 0.99; } 20% { opacity: 1; }
-  30% { opacity: 0.98; } 40% { opacity: 1; } 50% { opacity: 0.99; }
-  60% { opacity: 1; } 70% { opacity: 0.98; } 80% { opacity: 1; }
-  90% { opacity: 0.99; } 100% { opacity: 0.98; }
+  0% {
+    opacity: 0.98;
+  }
+  2% {
+    opacity: 1;
+  }
+  4% {
+    opacity: 0.97;
+  }
+  6% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0.99;
+  }
+  20% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.98;
+  }
+  40% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.99;
+  }
+  60% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.98;
+  }
+  80% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.99;
+  }
+  100% {
+    opacity: 0.98;
+  }
 }
 
 @keyframes module-flicker {
-  0%, 100% { opacity: 1; }
-  20% { opacity: 0.3; }
-  50% { opacity: 0.8; }
-  70% { opacity: 0.2; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  70% {
+    opacity: 0.2;
+  }
+}
+
+/* === Boot Screen === */
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: boot-fade 0.6s ease-in 2.8s forwards;
+}
+
+.boot-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 520px;
+  width: 90%;
+}
+
+.boot-line {
+  font-size: 0.7rem;
+  color: var(--color-crt-fg);
+  opacity: 0;
+  animation: boot-type 0.25s ease-out forwards;
+  text-shadow: 0 0 3px rgba(0, 255, 0, 0.6);
+}
+
+.boot-cursor {
+  font-size: 0.7rem;
+  color: var(--color-crt-fg);
+  opacity: 0;
+  animation:
+    boot-type 0.2s ease-out 2s forwards,
+    boot-blink 0.8s step-end 2.2s infinite;
+  text-shadow: 0 0 3px rgba(0, 255, 0, 0.6);
+}
+
+@keyframes boot-fade {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes boot-type {
+  0% {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes boot-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
