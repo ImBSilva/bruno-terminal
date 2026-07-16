@@ -349,7 +349,7 @@ npm run lint          # ESLint + Prettier
 
 - [x] `npx create-next-app@latest` com TypeScript, Tailwind, App Router
 - [x] Instalar dependências (three, r3f, drei, mdx, resend)
-- [ ] Configurar Tailwind 4 com tema CRT (`@theme` em `globals.css`)
+- [x] Configurar Tailwind 4 com tema CRT (`@theme` em `globals.css`)
 - [ ] Criar `lib/constants.ts` com dados de navegação e redes sociais
 - [ ] Criar `lib/utils.ts` com funções utilitárias
 - [ ] Implementar `BootScreen.tsx` com animação de inicialização
